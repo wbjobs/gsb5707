@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>传感器数据面板</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>传感器数据面板</h1>
+    <p class="subtitle">环境光 · 设备方向 · 地理位置 — 实时数值 / 曲线 / 权限状态</p>
+  </header>
+
+  <div id="secure-banner" class="banner banner-warn hidden">
+    当前页面处于<strong>非安全上下文</strong>（非 HTTPS / localhost），浏览器已禁用传感器与定位。
+    已自动切换为模拟数据，功能流程不受影响。
+  </div>
+  <div id="gesture-banner" class="banner banner-info hidden">
+    浏览器要求权限申请必须由用户操作触发，请点击下方「开始」按钮授权。
+  </div>
+
+  <section class="controls">
+    <button id="btn-start" class="btn btn-primary">开始</button>
+    <button id="btn-pause" class="btn" disabled>暂停</button>
+    <button id="btn-stop" class="btn" disabled>停止</button>
+    <button id="btn-clear" class="btn btn-danger">清空</button>
+    <span id="run-state" class="run-state">未启动</span>
+  </section>
+
+  <main class="grid">
+    <section class="card" id="card-light">
+      <header class="card-head">
+        <h2>环境光</h2>
+        <div class="badges">
+          <span class="badge" data-role="perm">权限：未知</span>
+          <span class="badge badge-src" data-role="source">来源：—</span>
+        </div>
+      </header>
+      <div class="value-row">
+        <span class="value" data-role="value">--</span>
+        <span class="unit">lux</span>
+      </div>
+      <canvas class="chart" data-role="chart" height="160"></canvas>
+      <div class="fallback-row hidden" data-role="manual">
+        <label>手动输入 lux：<input type="number" data-role="manual-input" min="0" max="100000" step="1" value="300"></label>
+        <button class="btn btn-small" data-role="manual-apply">应用</button>
+      </div>
+      <p class="hint" data-role="hint"></p>
+    </section>
+
+    <section class="card" id="card-orientation">
+      <header class="card-head">
+        <h2>设备方向</h2>
+        <div class="badges">
+          <span class="badge" data-role="perm">权限：未知</span>
+          <span class="badge badge-src" data-role="source">来源：—</span>
+        </div>
+      </header>
+      <div class="value-row triple">
+        <div><span class="label">α 偏航</span><span class="value" data-role="value-alpha">--</span><span class="unit">°</span></div>
+        <div><span class="label">β 俯仰</span><span class="value" data-role="value-beta">--</span><span class="unit">°</span></div>
+        <div><span class="label">γ 横滚</span><span class="value" data-role="value-gamma">--</span><span class="unit">°</span></div>
+      </div>
+      <canvas class="chart" data-role="chart" height="160"></canvas>
+      <div class="fallback-row hidden" data-role="manual">
+        <label>α <input type="number" data-role="manual-alpha" min="0" max="360" step="1" value="120"></label>
+        <label>β <input type="number" data-role="manual-beta" min="-180" max="180" step="1" value="20"></label>
+        <label>γ <input type="number" data-role="manual-gamma" min="-90" max="90" step="1" value="5"></label>
+        <button class="btn btn-small" data-role="manual-apply">应用</button>
+      </div>
+      <p class="hint" data-role="hint"></p>
+    </section>
+
+    <section class="card" id="card-geo">
+      <header class="card-head">
+        <h2>地理位置</h2>
+        <div class="badges">
+          <span class="badge" data-role="perm">权限：未知</span>
+          <span class="badge badge-src" data-role="source">来源：—</span>
+        </div>
+      </header>
+      <div class="value-row triple">
+        <div><span class="label">纬度</span><span class="value" data-role="value-lat">--</span><span class="unit">°</span></div>
+        <div><span class="label">经度</span><span class="value" data-role="value-lng">--</span><span class="unit">°</span></div>
+        <div><span class="label">精度</span><span class="value" data-role="value-acc">--</span><span class="unit">m</span></div>
+      </div>
+      <canvas class="chart" data-role="chart" height="160"></canvas>
+      <div class="fallback-row hidden" data-role="manual">
+        <label>纬度 <input type="number" data-role="manual-lat" min="-90" max="90" step="0.0001" value="39.9042"></label>
+        <label>经度 <input type="number" data-role="manual-lng" min="-180" max="180" step="0.0001" value="116.4074"></label>
+        <button class="btn btn-small" data-role="manual-apply">应用</button>
+      </div>
+      <p class="hint" data-role="hint"></p>
+    </section>
+  </main>
+
+  <section class="history">
+    <header class="card-head">
+      <h2>历史数据（IndexedDB）</h2>
+      <span class="badge" id="history-count">0 条</span>
+    </header>
+    <ul id="history-list" class="history-list"></ul>
+  </section>
+
+  <script src="js/db.js"></script>
+  <script src="js/smoothing.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/sensors.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
