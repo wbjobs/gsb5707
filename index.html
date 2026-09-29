@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>传感器仪表盘 · 环境光 / 设备方向 / 地理位置</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="app-header">
+  <h1>传感器仪表盘</h1>
+  <p class="subtitle">环境光 · 设备方向 · 地理位置 — 实时数值 / 曲线 / 权限状态</p>
+</header>
+
+<div id="secure-banner" class="banner banner-warn hidden">
+  当前不是安全上下文（非 HTTPS / localhost），浏览器已禁用传感器与定位。
+  你仍可切换到「模拟数据」或「手动输入」体验完整功能。
+</div>
+
+<section class="controls-bar">
+  <button id="btn-start" class="btn btn-primary">开始</button>
+  <button id="btn-pause" class="btn" disabled>暂停</button>
+  <button id="btn-stop" class="btn" disabled>停止</button>
+  <button id="btn-clear" class="btn">清空曲线</button>
+  <span class="spacer"></span>
+  <button id="btn-save" class="btn">保存历史</button>
+  <button id="btn-export" class="btn">导出 JSON</button>
+  <button id="btn-clear-history" class="btn btn-danger">清空历史</button>
+</section>
+
+<main class="grid" id="sensor-grid">
+
+  <!-- 环境光 -->
+  <section class="card" data-sensor="light">
+    <header class="card-head">
+      <h2>环境光 <span class="unit">(lux)</span></h2>
+      <span class="badge" data-role="status">未启动</span>
+    </header>
+    <div class="values">
+      <div class="value"><label>照度</label><span data-role="illuminance">--</span></div>
+    </div>
+    <canvas class="chart" height="140"></canvas>
+    <div class="card-actions">
+      <button class="btn btn-small" data-role="request">申请权限并启动</button>
+      <button class="btn btn-small" data-role="simulate">模拟数据</button>
+      <button class="btn btn-small" data-role="manual-toggle">手动输入</button>
+    </div>
+    <div class="manual-panel hidden" data-role="manual-panel">
+      <label>照度 <input type="range" min="0" max="10000" value="300" data-role="manual-illuminance">
+      <span data-role="manual-illuminance-val">300</span> lux</label>
+    </div>
+    <p class="hint" data-role="hint"></p>
+  </section>
+
+  <!-- 设备方向 -->
+  <section class="card" data-sensor="orientation">
+    <header class="card-head">
+      <h2>设备方向 <span class="unit">(°)</span></h2>
+      <span class="badge" data-role="status">未启动</span>
+    </header>
+    <div class="values">
+      <div class="value"><label>alpha</label><span data-role="alpha">--</span></div>
+      <div class="value"><label>beta</label><span data-role="beta">--</span></div>
+      <div class="value"><label>gamma</label><span data-role="gamma">--</span></div>
+    </div>
+    <canvas class="chart" height="140"></canvas>
+    <div class="card-actions">
+      <button class="btn btn-small" data-role="request">申请权限并启动</button>
+      <button class="btn btn-small" data-role="simulate">模拟数据</button>
+      <button class="btn btn-small" data-role="manual-toggle">手动输入</button>
+    </div>
+    <div class="manual-panel hidden" data-role="manual-panel">
+      <label>alpha <input type="range" min="0" max="360" value="0" data-role="manual-alpha">
+      <span data-role="manual-alpha-val">0</span>°</label>
+      <label>beta <input type="range" min="-180" max="180" value="0" data-role="manual-beta">
+      <span data-role="manual-beta-val">0</span>°</label>
+      <label>gamma <input type="range" min="-90" max="90" value="0" data-role="manual-gamma">
+      <span data-role="manual-gamma-val">0</span>°</label>
+    </div>
+    <p class="hint" data-role="hint"></p>
+  </section>
+
+  <!-- 地理位置 -->
+  <section class="card" data-sensor="geolocation">
+    <header class="card-head">
+      <h2>地理位置</h2>
+      <span class="badge" data-role="status">未启动</span>
+    </header>
+    <div class="values">
+      <div class="value"><label>纬度</label><span data-role="lat">--</span></div>
+      <div class="value"><label>经度</label><span data-role="lng">--</span></div>
+      <div class="value"><label>精度 (m)</label><span data-role="acc">--</span></div>
+    </div>
+    <canvas class="chart" height="140"></canvas>
+    <div class="card-actions">
+      <button class="btn btn-small" data-role="request">申请权限并启动</button>
+      <button class="btn btn-small" data-role="simulate">模拟数据</button>
+      <button class="btn btn-small" data-role="manual-toggle">手动输入</button>
+    </div>
+    <div class="manual-panel hidden" data-role="manual-panel">
+      <label>纬度 <input type="range" min="-90" max="90" step="0.0001" value="39.9042" data-role="manual-lat">
+      <span data-role="manual-lat-val">39.9042</span></label>
+      <label>经度 <input type="range" min="-180" max="180" step="0.0001" value="116.4074" data-role="manual-lng">
+      <span data-role="manual-lng-val">116.4074</span></label>
+    </div>
+    <p class="hint" data-role="hint"></p>
+  </section>
+</main>
+
+<section class="history">
+  <h2>历史记录 <span id="history-count" class="unit"></span></h2>
+  <div class="history-list" id="history-list"><p class="hint">暂无历史数据。点击「保存历史」将当前会话写入 IndexedDB。</p></div>
+</section>
+
+<footer class="app-footer">
+  <span id="run-state">状态：空闲</span>
+</footer>
+
+<script src="js/db.js"></script>
+<script src="js/chart.js"></script>
+<script src="js/sensors.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
